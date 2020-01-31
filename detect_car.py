@@ -5,6 +5,11 @@ import mrcnn.config
 import mrcnn.utils
 from mrcnn.model import MaskRCNN
 from pathlib import Path
+import time
+
+
+# import tensorflow.compat.v1 as tf
+# tf.disable_v2_behavior()
 
 
 # Configuration that will be used by the Mask-RCNN library
@@ -76,9 +81,12 @@ while video_capture.isOpened():
     # Convert the image from BGR color (which OpenCV uses) to RGB color
     rgb_image = frame[:, :, ::-1]
 
+    start = time.time()
     # Run the image through the Mask R-CNN model to get results.
     results = model.detect([rgb_image], verbose=0)
-
+    end = time.time()
+    time_taken = end - start
+    print('Time: ',time_taken)
     # Mask R-CNN assumes we are running detection on multiple images.
     # We only passed in one image to detect, so only grab the first result.
     r = results[0]
@@ -158,6 +166,7 @@ while video_capture.isOpened():
         # Show the frame of video on the screen
         cv2.imshow('Video', frame)
 
+    break
     # Hit 'q' to quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
