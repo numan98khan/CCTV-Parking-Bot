@@ -164,12 +164,12 @@ while video_capture.isOpened():
                 sms_sent = True
 
         # Show the frame of video on the screen
-        cv2.imshow('Video', frame)
+        # cv2.imshow('Video', frame)
 
-    break
-    # Hit 'q' to quit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # break
+    # # Hit 'q' to quit
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
 
 # Clean up everything when finished
 video_capture.release()
