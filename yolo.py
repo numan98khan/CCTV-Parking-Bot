@@ -8,6 +8,8 @@ import os
 from timeit import default_timer as timer
 import json
 
+import pickle
+
 import numpy as np
 from keras import backend as K
 from keras.models import load_model
@@ -230,11 +232,13 @@ def detect_video(yolo, video_path, output_path=""):
     # with open('outputfile', 'w') as fout:
     #     json.dump(yolo.data_collection, fout)
 
-    
+    # Saving the objects:
+    with open('objs.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+        pickle.dump(yolo.data_collection, f)
 
-    # a = np.arange(10).reshape(2,5) # a 2 by 5 array
-    b = yolo.data_collection.tolist() # nested lists with same data, indices
-    file_path = "outputfile" ## your path variable
-    json.dump(b, codecs.open(file_path, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4) ### this saves the array in .json format
+    # # Getting back the objects:
+    # with open('objs.pkl') as f:  # Python 3: open(..., 'rb')
+    #     obj0, obj1, obj2 = pickle.load(f)
+
     yolo.close_session()
 
