@@ -130,7 +130,8 @@ class YOLO(object):
                 K.learning_phase(): 0
             })
 
-        print(out_boxes, out_scores, out_classes)
+        # print(out_boxes, out_scores, out_classes)
+        
         temp_dict = dict()
         temp_dict["boxes"] = out_boxes
         temp_dict["scores"] = out_scores
@@ -159,7 +160,7 @@ class YOLO(object):
             left = max(0, np.floor(left + 0.5).astype('int32'))
             bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
             right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
-            print(label, (left, top), (right, bottom))
+            # print(label, (left, top), (right, bottom))
 
             if top - label_size[1] >= 0:
                 text_origin = np.array([left, top - label_size[1]])
@@ -195,7 +196,7 @@ def detect_video(yolo, video_path, output_path=""):
                         int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     isOutput = True if output_path != "" else False
     if isOutput:
-        print("!!! TYPE:", type(output_path), type(video_FourCC), type(video_fps), type(video_size))
+        # print("!!! TYPE:", type(output_path), type(video_FourCC), type(video_fps), type(video_size))
         out = cv2.VideoWriter(output_path, video_FourCC, video_fps, video_size)
     accum_time = 0
     curr_fps = 0
@@ -218,14 +219,14 @@ def detect_video(yolo, video_path, output_path=""):
             accum_time = accum_time - 1
             fps = "FPS: " + str(curr_fps)
             curr_fps = 0
-        cv2.putText(result, text=fps, org=(3, 15), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=0.50, color=(255, 0, 0), thickness=2)
-        cv2.namedWindow("result", cv2.WINDOW_NORMAL)
-        cv2.imshow("result", result)
-        if isOutput:
-            out.write(result)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # cv2.putText(result, text=fps, org=(3, 15), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        #             fontScale=0.50, color=(255, 0, 0), thickness=2)
+        # cv2.namedWindow("result", cv2.WINDOW_NORMAL)
+        # cv2.imshow("result", result)
+        # if isOutput:
+        #     out.write(result)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
         # break
     # print(yolo.data_collection)
     
