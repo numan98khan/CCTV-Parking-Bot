@@ -6,6 +6,7 @@ Class definition of YOLO_v3 style detection model on image and video
 import colorsys
 import os
 from timeit import default_timer as timer
+import json
 
 import numpy as np
 from keras import backend as K
@@ -17,6 +18,8 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
+
+import codecs
 
 class YOLO(object):
     _defaults = {
@@ -43,6 +46,7 @@ class YOLO(object):
         self.anchors = self._get_anchors()
         self.sess = K.get_session()
         self.boxes, self.scores, self.classes = self.generate()
+        self.data_collection = []
 
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
@@ -124,6 +128,15 @@ class YOLO(object):
                 K.learning_phase(): 0
             })
 
+        print(out_boxes, out_scores, out_classes)
+        temp_dict = dict()
+        temp_dict["boxes"] = out_boxes
+        temp_dict["scores"] = out_scores
+        temp_dict["classes"] = out_classes
+        
+        self.data_collection.append(temp_dict)
+
+
         print('Found {} boxes for {}'.format(len(out_boxes), 'img'))
 
         font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
@@ -190,6 +203,9 @@ def detect_video(yolo, video_path, output_path=""):
         return_value, frame = vid.read()
         image = Image.fromarray(frame)
         image = yolo.detect_image(image)
+
+        # print(image)
+
         result = np.asarray(image)
         curr_time = timer()
         exec_time = curr_time - prev_time
@@ -208,5 +224,17 @@ def detect_video(yolo, video_path, output_path=""):
             out.write(result)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        # break
+    # print(yolo.data_collection)
+    
+    # with open('outputfile', 'w') as fout:
+    #     json.dump(yolo.data_collection, fout)
+
+    
+
+    # a = np.arange(10).reshape(2,5) # a 2 by 5 array
+    b = yolo.data_collection.tolist() # nested lists with same data, indices
+    file_path = "outputfile" ## your path variable
+    json.dump(b, codecs.open(file_path, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4) ### this saves the array in .json format
     yolo.close_session()
 
